@@ -5,10 +5,8 @@ from .aioleviosa import LeviosaShadeGroup as tShadeGroup, LeviosaZoneHub as tZon
 import voluptuous as vol
 
 from homeassistant.components.cover import (
-    DEVICE_CLASS_SHADE,
-    SUPPORT_CLOSE,
-    SUPPORT_OPEN,
-    SUPPORT_STOP,
+    CoverDeviceClass,
+    CoverEntityFeature,
     CoverEntity,
 )
 from homeassistant.const import ATTR_ENTITY_ID
@@ -124,13 +122,13 @@ class LeviosaBlindGroup(CoverEntity):
     def supported_features(self):
         """Bitmap indicating which features this device supports."""
 
-        return SUPPORT_OPEN | SUPPORT_CLOSE | SUPPORT_STOP
+        return CoverEntityFeature.OPEN | CoverEntityFeature.CLOSE | CoverEntityFeature.STOP
 
     @property
     def device_class(self):
         """Indicate we're managing a Roller blind motor group."""
 
-        return DEVICE_CLASS_SHADE
+        return CoverDeviceClass.SHADE
 
     @property
     def device_info(self):

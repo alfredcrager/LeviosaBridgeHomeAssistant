@@ -1,0 +1,9 @@
+{
+  "domain": "leviosa_shades",
+  "name": "Leviosa Motor Shades",
+  "documentation": "https://www.home-assistant.io/integrations/leviosa_shades",
+  "version":"2.0.1",
+  "codeowners": ["@altersis"],
+  "dependencies": ["cover"],
+  "config_flow": true
+}

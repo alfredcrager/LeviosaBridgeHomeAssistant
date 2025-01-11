@@ -29,7 +29,7 @@ _LOGGER = logging.getLogger(__name__)
 TRANSITION_COMPLETE_DURATION = 30
 PARALLEL_UPDATES = 1
 
-COVER_NEXT_POS_SCHEMA = vol.Schema({vol.Optional(ATTR_ENTITY_ID): cv.entity_ids})
+COVER_NEXT_POS_SCHEMA = {vol.Optional(ATTR_ENTITY_ID): cv.entity_ids}
 
 
 async def async_setup_entry(hass, entry, async_add_entities):

@@ -1,11 +1,11 @@
 {
   "domain": "leviosa_shades",
   "name": "Leviosa Motor Shades",
-  "documentation": "https://github.com/radusuciu/LeviosaBridgeHomeAssistant",
-  "issue_tracker": "https://github.com/radusuciu/LeviosaBridgeHomeAssistant/issues",
-  "iot_class": "local_polling",
-  "version":"2.0.2",
   "codeowners": ["@altersis"],
+  "config_flow": true,
   "dependencies": ["cover"],
-  "config_flow": true
+  "documentation": "https://github.com/radusuciu/LeviosaBridgeHomeAssistant",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/radusuciu/LeviosaBridgeHomeAssistant/issues",
+  "version": "2.0.2"
 }

@@ -45,3 +45,20 @@ Restart Home Assistant after installation.
 
 Add the Leviosa integration through "Devices & services" under "Settings" in 
 Home Assistant
+
+## Development
+
+### Version Management
+
+When creating a new release:
+
+1. Update the version in `custom_components/leviosa_shades/manifest.json`
+2. Commit the version change: `git commit -am "Bump version to X.Y.Z"`
+3. Create a git tag matching the version: `git tag vX.Y.Z`
+4. Push the changes and tag: `git push && git push --tags`
+
+The GitHub Actions workflow will automatically create a release when a version tag is pushed. 
+HACS uses GitHub releases to notify users of updates, so it's important that:
+- The version in `manifest.json` matches the git tag
+- Releases follow semantic versioning (X.Y.Z format)
+- Pre-release versions can include suffixes like `-beta` or `-rc`

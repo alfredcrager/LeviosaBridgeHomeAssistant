@@ -5,10 +5,14 @@ import logging
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.const import Platform
+from homeassistant.helpers import config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS = [Platform.COVER]
+
+# This integration is configured via config flow only
+CONFIG_SCHEMA = cv.config_entry_only_config_schema("leviosa_shades")
 
 
 async def async_setup(hass: HomeAssistant, config: dict):

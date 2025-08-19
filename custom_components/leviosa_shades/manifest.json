@@ -4,8 +4,8 @@
   "codeowners": ["@altersis"],
   "config_flow": true,
   "dependencies": ["cover"],
-  "documentation": "https://github.com/radusuciu/LeviosaBridgeHomeAssistant",
+  "documentation": "https://github.com/alfredcrager/LeviosaBridgeHomeAssistant",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/radusuciu/LeviosaBridgeHomeAssistant/issues",
+  "issue_tracker": "https://github.com/alfredcrager/LeviosaBridgeHomeAssistant/issues",
   "version": "2.0.2"
 }

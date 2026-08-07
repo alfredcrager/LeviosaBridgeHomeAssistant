@@ -78,9 +78,9 @@ class LeviosaBlindGroup(CoverEntity):
 
     @property
     def assumed_state(self):
-        """Indicate that we do not go to the device to know its state."""
+        """Return True because the Zone does not report actual shade state."""
 
-        return False
+        return True
 
     @property
     def current_cover_position(self):

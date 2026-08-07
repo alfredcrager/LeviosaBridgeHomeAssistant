@@ -1,36 +1,42 @@
 """The Leviosa shades Zone integration."""
-import asyncio
-import logging
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
 from homeassistant.const import Platform
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import service
 
-_LOGGER = logging.getLogger(__name__)
+from .const import DOMAIN, SERVICE_NEXT_DOWN_POS, SERVICE_NEXT_UP_POS
 
 PLATFORMS = [Platform.COVER]
 
 
-async def async_setup(hass: HomeAssistant, config: dict):
+async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     """Set up the Leviosa shades Zone component."""
+    service.async_register_platform_entity_service(
+        hass,
+        DOMAIN,
+        SERVICE_NEXT_DOWN_POS,
+        entity_domain=Platform.COVER,
+        func="next_down_pos",
+        schema={},
+    )
+    service.async_register_platform_entity_service(
+        hass,
+        DOMAIN,
+        SERVICE_NEXT_UP_POS,
+        entity_domain=Platform.COVER,
+        func="next_up_pos",
+        schema={},
+    )
     return True
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Leviosa shades Zone from a config entry."""
-
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-    
-    # if unload_ok:
-    #     _LOGGER.debug("data: %s", entry.data)
-    #     hass.data[DOMAIN].pop(entry.entry_id)
-    #     # hass.data["cover"].pop(entry.entry_id)
-
-    return unload_ok
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)

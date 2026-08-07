@@ -1,26 +1,16 @@
 """The Leviosa Shades Zone base entity."""
 import logging
 
-from .aioleviosa import LeviosaShadeGroup as tShadeGroup, LeviosaZoneHub as tZoneHub
-import voluptuous as vol
-
 from homeassistant.components.cover import (
     CoverDeviceClass,
-    CoverEntityFeature,
     CoverEntity,
+    CoverEntityFeature,
 )
-from homeassistant.const import ATTR_ENTITY_ID
-from homeassistant.helpers import config_validation as cv, entity_platform
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .const import (
-    BLIND_GROUPS,
-    DOMAIN,
-    MANUFACTURER,
-    MODEL,
-    SERVICE_NEXT_DOWN_POS,
-    SERVICE_NEXT_UP_POS,
-)
+from .aioleviosa import LeviosaShadeGroup as tShadeGroup
+from .aioleviosa import LeviosaZoneHub as tZoneHub
+from .const import BLIND_GROUPS, DOMAIN, MANUFACTURER, MODEL
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -28,8 +18,6 @@ _LOGGER = logging.getLogger(__name__)
 # from one state to another
 TRANSITION_COMPLETE_DURATION = 30
 PARALLEL_UPDATES = 1
-
-COVER_NEXT_POS_SCHEMA = {vol.Optional(ATTR_ENTITY_ID): cv.entity_ids}
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
@@ -61,19 +49,6 @@ async def async_setup_entry(hass, entry, async_add_entities):
             )
         )
     async_add_entities(entities)
-
-    _LOGGER.debug("Setting up Leviosa shade group services")
-    platform = entity_platform.current_platform.get()
-    platform.async_register_entity_service(
-        SERVICE_NEXT_DOWN_POS,
-        COVER_NEXT_POS_SCHEMA,
-        "next_down_pos",
-    )
-    platform.async_register_entity_service(
-        SERVICE_NEXT_UP_POS,
-        COVER_NEXT_POS_SCHEMA,
-        "next_up_pos",
-    )
 
 
 class LeviosaBlindGroup(CoverEntity):

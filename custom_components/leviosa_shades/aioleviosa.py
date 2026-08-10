@@ -10,7 +10,6 @@ import logging
 from typing import Any, Mapping
 
 import aiohttp
-import async_timeout
 from async_upnp_client.advertisement import SsdpAdvertisementListener
 
 _LOGGER = logging.getLogger(__name__)
@@ -110,7 +109,7 @@ class LeviosaZoneHub:
         response = None
         try:
             url = "http://" + self.hub_ip + url_frag
-            with async_timeout.timeout(self.timeout):
+            async with asyncio.timeout(self.timeout):
                 _LOGGER.debug("url: %s", url)
                 response = await self.websession.post(url)
                 _LOGGER.debug("return code is: %d", response.status)
@@ -119,7 +118,7 @@ class LeviosaZoneHub:
             raise LvsaApiConnectionError
         finally:
             if response is not None:
-                await response.release()
+                response.release()
 
     async def get(self, url_frag: str) -> dict:
         """
@@ -132,7 +131,7 @@ class LeviosaZoneHub:
         url = "http://" + self.hub_ip + "/" + url_frag
         try:
             _LOGGER.debug("Sending GET request to: %s" % url)
-            with async_timeout.timeout(self.timeout):
+            async with asyncio.timeout(self.timeout):
                 response = await self.websession.get(url)
             if response.status == 200:
                 data = await response.json(content_type=None)
@@ -144,7 +143,7 @@ class LeviosaZoneHub:
             raise LvsaApiConnectionError
         finally:
             if response is not None:
-                await response.release()
+                response.release()
 
     async def getHubInfo(self):
         _LOGGER.debug("Getting HUB info from: %s", self.hub_ip)

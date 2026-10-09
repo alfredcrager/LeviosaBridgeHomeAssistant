@@ -7,6 +7,8 @@ from homeassistant.components.cover import (
     CoverEntityFeature,
 )
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.device_registry import DeviceInfo
 
 from .aioleviosa import LeviosaShadeGroup as tShadeGroup
 from .aioleviosa import LeviosaZoneHub as tZoneHub
@@ -45,7 +47,10 @@ async def async_setup_entry(hass, entry, async_add_entities):
         new_group_obj = hub.AddGroup(blind_group)
         entities.append(
             LeviosaBlindGroup(
-                hass, hub_mac + "-" + str(new_group_obj.number), new_group_obj
+                hass,
+                hub_mac + "-" + str(new_group_obj.number),
+                new_group_obj,
+                entry.entry_id,
             )
         )
     async_add_entities(entities)
@@ -54,11 +59,21 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class LeviosaBlindGroup(CoverEntity):
     """Represents a Leviosa shade group entity."""
 
-    def __init__(self, hass, blind_group_id, blind_group_obj: tShadeGroup):
+    def __init__(self, hass, blind_group_id, blind_group_obj: tShadeGroup, config_entry_id: str):
         """Initialize the shade group."""
         self._blind_group_id = blind_group_id
         self._blind_group_obj = blind_group_obj
         self._hass = hass
+        self._config_entry_id = config_entry_id
+        
+        # Populate initial/default device_info in __init__
+        self._attr_device_info = DeviceInfo(
+            identifiers = {(DOMAIN, self._blind_group_obj.Hub.hub_ip)},
+            name = self._blind_group_obj.Hub.name,
+            manufacturer = MANUFACTURER,
+            model = MODEL,
+        )
+        
         _LOGGER.debug(
             "Creating cover.%s, UID: %s",
             self._blind_group_obj.name,
@@ -108,16 +123,8 @@ class LeviosaBlindGroup(CoverEntity):
     @property
     def device_info(self):
         """Return the device_info of the device."""
-
-        device_info = {
-            "identifiers": {(DOMAIN, self._blind_group_obj.Hub.hub_ip)},
-            "name": self._blind_group_obj.Hub.name,
-            "manufacturer": MANUFACTURER,
-            "model": MODEL,
-            "via_device": (DOMAIN, self._blind_group_obj.Hub.hub_ip),
-        }
-
-        return device_info
+        
+        return self._attr_device_info
 
     @property
     def is_opening(self):
@@ -155,3 +162,18 @@ class LeviosaBlindGroup(CoverEntity):
     async def next_up_pos(self):
         """Move to the next position down."""
         await self._blind_group_obj.up()
+        
+    async def async_added_to_hass(self) -> None:
+        """Run when entity about to be added to hass."""
+        await super().async_added_to_hass()
+        
+        # Modern HA API: Get parent device_id scoped to config_entry_id
+        via_device_id = dr.async_get_device_id_by_identifier(
+            self.hass,
+            (DOMAIN, self._blind_group_obj.Hub.hub_ip),
+            config_entry_id=self._config_entry_id,
+        )
+
+        # Upgrade device_info with via_device_id once hass & device registry are available
+        if via_device_id and self._attr_device_info:
+            self._attr_device_info["via_device_id"] = via_device_id
